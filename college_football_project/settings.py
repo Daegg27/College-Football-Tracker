@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-e%zoi7w-6r3&-n27@54ueo^)b97cn2=rgodongn%xy99_vg&9!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)
+
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'college_football_app'
 ]
 
 MIDDLEWARE = [
@@ -76,7 +82,7 @@ WSGI_APPLICATION = 'college_football_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'assessment_5',
+        'NAME': 'assessment_five',
     }
 }
 
