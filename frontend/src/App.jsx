@@ -1,13 +1,23 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
+import NavBar from './components/NavBar.jsx'
+import HomePage from './pages/HomePage.jsx'
+import SignUpPage from './pages/SignUpPage'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div className="App">
-      <h1>Is this working, This is cool, hi</h1>
+      <NavBar />
+      <Router> 
+        <Routes>
+          <Route path='/' element={<HomePage/>} />
+          <Route path='/signup' element={<SignUpPage/>} />
+        </Routes>
+      </Router>  
     </div>
   )
 }
