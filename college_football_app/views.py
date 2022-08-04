@@ -4,7 +4,13 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from .models import AppUser as User
+from dotenv import load_dotenv
+import os
+import json
+import requests as HTTP_Client 
 
+
+load_dotenv()
 # Create your views here.
 
 def send_the_homepage(request):
@@ -71,3 +77,30 @@ def who_am_i(request):
         return HttpResponse(data)
     else:
         return JsonResponse({'user':None})
+
+@api_view(['POST'])
+def find_team(request):
+    
+    year = request.data['year']
+    team = request.data['team']
+    print(year)
+    print(team)
+
+    url = f'https://api.collegefootballdata.com/games?year={year}&team={team}'
+
+    headers = {
+        "Authorization": f"Bearer {os.environ['token']}"
+    }
+
+    all_games = []
+
+    response = HTTP_Client.get(url, headers=headers)
+    jsonResponse = response.json()
+    print(jsonResponse)
+
+    for game in jsonResponse:
+        all_games.append(game)
+
+
+    return JsonResponse({'success': True, 'list_of_games': all_games, 'team':team})
+    

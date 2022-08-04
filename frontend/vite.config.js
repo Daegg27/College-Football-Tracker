@@ -13,6 +13,7 @@ export default defineConfig({
     // delete the old build when creating the new build. 
     // this is the default behavior, unless outDir is outside of the current directory
     emptyOutDir: true,
+    sourcemap: true,
   },
   plugins: [react()]
 })
