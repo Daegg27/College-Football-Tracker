@@ -4,12 +4,8 @@ import { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
 
 
-function SearchByTeamPage(){
-
-    const [games, setGames] = useState([])
-    const [team, setTeams] = useState(null)
-    const [wins, setWins] = useState(null)
-    const [losses, setLosses] = useState(null)
+function SearchByTeamPage(props){
+    const {setGames, setTeams, setWins, setLosses, games, team, wins, losses} = props
 
 
 
@@ -32,6 +28,11 @@ function SearchByTeamPage(){
     }
     console.log(games)
 
+    useEffect(() => { 
+        console.log('resetting list of games')
+        setGames([])
+        setTeams(null)
+    }, [])
 
 
     return (
@@ -47,7 +48,7 @@ function SearchByTeamPage(){
                     <button type='SUBMIT'>SUBMIT</button>
                 </form>
                 <hr></hr>
-                <h1><strong>{team}</strong> was ({wins}-{losses})</h1>
+                {team != null && <h1><strong>{team}</strong> was ({wins}-{losses})</h1>}
                 <hr></hr>
                 {games.length != 0 && games.map((game) => {
                     return <div>

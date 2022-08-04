@@ -33,6 +33,10 @@ axios.defaults.headers.common['X-CSRFToken'] = getCSRFToken()
 function App() {
 
   const [user, setUser] = useState(null)
+  const [games, setGames] = useState([])
+  const [team, setTeams] = useState(null)
+  const [wins, setWins] = useState(null)
+  const [losses, setLosses] = useState(null)
 
 
   const whoAmI = async () => {
@@ -53,8 +57,8 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/signup' element={<SignUpPage/>} />
-          <Route path='/search_by_team' element={<SearchByTeamPage/>} />
-          <Route path='/search_by_team/:gameID' element={<SingleGamePage />}/>
+          <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses}/>} />
+          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games}/>}/>
         </Routes>
       </Router>  
     </div>
