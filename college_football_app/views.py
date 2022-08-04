@@ -107,4 +107,30 @@ def find_team(request):
 
 
     return JsonResponse({'success': True, 'list_of_games': all_games, 'team':team, 'wins': wins, 'losses':losses})
+
+@api_view(['POST'])
+def fetchInformation(request, gameID):
+    
+    year = request.data['year']
+    away_team = request.data['away_team']
+    home_team = request.data['home_team']
+
+    url = f'https://api.collegefootballdata.com/teams/fbs?year={year}'
+
+    headers = {
+        "Authorization": f"Bearer {os.environ['token']}"
+    }
+
+    response = HTTP_Client.get(url, headers=headers)
+    jsonResponse = response.json()
+
+    for team in jsonResponse:
+        if team['school'] == away_team:
+            away_team_image = team['logos'][0]
+        # if team['school'] == home_team:
+        #     home_team_image = team['school']['logos'][0]
+    print('away image:', away_team_image)
+    # print('home_image:', home_team_image)
+
+    return JsonResponse({'away_image': away_team_image})
     

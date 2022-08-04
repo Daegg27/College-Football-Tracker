@@ -19,7 +19,6 @@ function SearchByTeamPage(props){
             'team': team_name.value,
             'year': season.value
         }).then((response) => {
-            console.log(response)
             setGames(response.data.list_of_games)
             setTeams(response.data.team)
             setWins(response.data.wins)

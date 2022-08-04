@@ -1,25 +1,20 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
+import Game from '../components/Game';
 
 function SingleGamePage(props){
     const {team, games} = props
 
     let {gameID} = useParams() 
-    const [currentGame, setCurrentGame] = useState([])
+    const [currentGame, setCurrentGame] = useState(null)
 
     function FetchProperGame(){
-        console.log(games, 'inside Fetch')
         for (let game of games){
-            console.log(game, games)
             if (gameID == game.id){
+                console.log(game)
                 setCurrentGame(game)
-                console.log('this is the game', game.id)
+                // console.log('this is the game', game.id)
             }
-            else
-            {
-                console.log('not the game', game.id)
-            }
-            console.log(currentGame)
         }
     }
     useEffect(FetchProperGame, [])
@@ -28,7 +23,7 @@ function SingleGamePage(props){
 
     return (
         <div>
-            <h1>This is {gameID} for {team}</h1>
+            {currentGame != null && <Game currentGame={currentGame}/>}
         </div>
     )
 
