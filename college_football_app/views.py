@@ -1,3 +1,4 @@
+from xxlimited import new
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
@@ -83,10 +84,8 @@ def find_team(request):
     
     year = request.data['year']
     team = request.data['team']
-    print(year)
-    print(team)
 
-    url = f'https://api.collegefootballdata.com/games?year={year}&team={team}'
+    url = f'https://api.collegefootballdata.com/games?year={year}&team={team}' # This is the inital call to grab the schedule 
 
     headers = {
         "Authorization": f"Bearer {os.environ['token']}"
@@ -96,11 +95,16 @@ def find_team(request):
 
     response = HTTP_Client.get(url, headers=headers)
     jsonResponse = response.json()
-    print(jsonResponse)
 
     for game in jsonResponse:
         all_games.append(game)
 
+    second_url = f'https://api.collegefootballdata.com/records?year={year}&team={team}' # This call is made to retrieve the record 
+    second_response = HTTP_Client.get(second_url, headers=headers)
+    new_response = second_response.json()
+    wins = new_response[0]['total']['wins']
+    losses = new_response[0]['total']['losses']
 
-    return JsonResponse({'success': True, 'list_of_games': all_games, 'team':team})
+
+    return JsonResponse({'success': True, 'list_of_games': all_games, 'team':team, 'wins': wins, 'losses':losses})
     

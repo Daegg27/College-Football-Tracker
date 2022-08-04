@@ -8,6 +8,7 @@ import SignUpPage from './pages/SignUpPage'
 import axios from 'axios'
 import SearchByTeamPage from './pages/SearchByTeamPage'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import SingleGamePage from './pages/SingleGamePage'
 
 
 
@@ -53,6 +54,7 @@ function App() {
           <Route path='/' element={<HomePage/>} />
           <Route path='/signup' element={<SignUpPage/>} />
           <Route path='/search_by_team' element={<SearchByTeamPage/>} />
+          <Route path='/search_by_team/:gameID' element={<SingleGamePage />}/>
         </Routes>
       </Router>  
     </div>

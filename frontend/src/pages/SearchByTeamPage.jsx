@@ -1,12 +1,15 @@
 import axios from 'axios'
 import Container from 'react-bootstrap/Container';
 import { useEffect, useState } from 'react'
+import { Link } from "react-router-dom"
 
 
 function SearchByTeamPage(){
 
     const [games, setGames] = useState([])
     const [team, setTeams] = useState(null)
+    const [wins, setWins] = useState(null)
+    const [losses, setLosses] = useState(null)
 
 
 
@@ -23,6 +26,8 @@ function SearchByTeamPage(){
             console.log(response)
             setGames(response.data.list_of_games)
             setTeams(response.data.team)
+            setWins(response.data.wins)
+            setLosses(response.data.losses)
         })
     }
     console.log(games)
@@ -42,11 +47,13 @@ function SearchByTeamPage(){
                     <button type='SUBMIT'>SUBMIT</button>
                 </form>
                 <hr></hr>
-            {games.length != 0 && games.map((game) => {
-                return <div>
-                    <p>Week.{game.week} for {team}</p>
-                    <hr></hr>
-                </div>
+                <h1><strong>{team}</strong> was ({wins}-{losses})</h1>
+                <hr></hr>
+                {games.length != 0 && games.map((game) => {
+                    return <div>
+                        <p><Link to={`/search_by_team/${game.id}`}>Week {game.week}</Link>, {game.home_team}: {game.home_points} vs. {game.away_team}: {game.away_points}</p>
+                        <hr></hr>
+                    </div>
             })}
             </Container>
         </div>
