@@ -8,6 +8,8 @@ import axios from 'axios'
 function Game(props){
     const {currentGame} = props
 
+    const [information, setInformation] = useState(null)
+
     function FetchInformation(){
         axios.post(`search_for_team/${currentGame.id}`, {
             year: currentGame.season,
@@ -15,6 +17,7 @@ function Game(props){
             home_team: currentGame.home_team
         }).then((response) => {
             console.log(response)
+            setInformation(response.data)
         })
     }
 
@@ -26,9 +29,10 @@ function Game(props){
         <div>
             <Container id='secondary-container'>
                 <h1>{currentGame.away_team} at {currentGame.home_team}</h1>
+                <hr />
                 <Row>
-                    <Col sm='6'><h1>{currentGame.away_team}: {currentGame.away_points}</h1></Col>
-                    <Col sm='6'><h1>{currentGame.home_team}: {currentGame.home_points}</h1></Col>
+                    {information != null && <Col sm='6'><h1><img src={information.away_image} className='team-logo'/>{currentGame.away_team} {information.away_mascot}: {currentGame.away_points}</h1></Col> }
+                    {information != null && <Col sm='6'><h1><img src={information.home_image} className='team-logo'/>{currentGame.home_team} {information.home_mascot}: {currentGame.home_points}</h1></Col> } 
                 </Row>
             </Container>
             

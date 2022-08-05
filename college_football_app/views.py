@@ -121,16 +121,20 @@ def fetchInformation(request, gameID):
         "Authorization": f"Bearer {os.environ['token']}"
     }
 
+    my_data = {}
+
     response = HTTP_Client.get(url, headers=headers)
     jsonResponse = response.json()
 
     for team in jsonResponse:
         if team['school'] == away_team:
-            away_team_image = team['logos'][0]
-        # if team['school'] == home_team:
-        #     home_team_image = team['school']['logos'][0]
-    print('away image:', away_team_image)
-    # print('home_image:', home_team_image)
+            my_data['away_team_image'] = team['logos'][0]
+            my_data['away_mascot'] = team['mascot']
+        if team['school'] == home_team:
+            my_data['home_team_image'] = team['logos'][0]
+            my_data['home_mascot'] = team['mascot']
+    print(my_data)
+    
 
-    return JsonResponse({'away_image': away_team_image})
+    return JsonResponse(my_data)
     
