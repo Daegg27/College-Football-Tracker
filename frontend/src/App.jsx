@@ -50,9 +50,17 @@ function App() {
     whoAmI()
   }, [])
 
+  function makeAPICall(){
+    console.log('button clicked')
+    axios.get('/test/').then((response) => {
+      console.log(response)
+    })
+  }
+
   return (
     <div className="App">
       <NavBar />
+      <button onClick={makeAPICall}>Test.com</button>
       <Router> 
         <Routes>
           <Route path='/' element={<HomePage/>} />

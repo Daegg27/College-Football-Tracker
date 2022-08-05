@@ -1,3 +1,4 @@
+from inspect import Parameter
 from xxlimited import new
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -137,4 +138,21 @@ def fetchInformation(request, gameID):
     
 
     return JsonResponse(my_data)
+
+@api_view(['GET'])
+def test(request):
+    
+    # url = f'http://api.weatherapi.com/v1/current.json?key={os.environ['key']}&q=99004'
+    url = 'http://api.weatherapi.com/v1/current.json'
+
+    response = HTTP_Client.get(url, params={
+        'key': os.environ['key'],
+        'q':'85001'
+    })
+    jsonResponse = response.json()
+    print(jsonResponse)
+
+    return JsonResponse({'success': True})
+
+    
     

@@ -31,8 +31,8 @@ function Game(props){
                 <h1>{currentGame.away_team} at {currentGame.home_team}</h1>
                 <hr />
                 <Row>
-                    {information != null && <Col sm='6'><h1><img src={information.away_image} className='team-logo'/>{currentGame.away_team} {information.away_mascot}: {currentGame.away_points}</h1></Col> }
-                    {information != null && <Col sm='6'><h1><img src={information.home_image} className='team-logo'/>{currentGame.home_team} {information.home_mascot}: {currentGame.home_points}</h1></Col> } 
+                    {information != null && <Col sm='6'><h1><img src={information.away_team_image} className='team-logo'/>{currentGame.away_team} {information.away_mascot}: {currentGame.away_points}</h1></Col> }
+                    {information != null && <Col sm='6'><h1><img src={information.home_team_image} className='team-logo'/>{currentGame.home_team} {information.home_mascot}: {currentGame.home_points}</h1></Col> } 
                 </Row>
             </Container>
             
