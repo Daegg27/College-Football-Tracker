@@ -1,4 +1,5 @@
 from inspect import Parameter
+from unicodedata import category
 from xxlimited import new
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -113,6 +114,7 @@ def find_team(request):
 def fetchInformation(request, gameID):
     
     year = request.data['year']
+    game_id = request.data['gameID']
     away_team = request.data['away_team']
     home_team = request.data['home_team']
 
@@ -134,8 +136,50 @@ def fetchInformation(request, gameID):
         if team['school'] == home_team:
             my_data['home_team_image'] = team['logos'][0]
             my_data['home_mascot'] = team['mascot']
-    print(my_data)
+
+    second_url = f'https://api.collegefootballdata.com/games/teams?year={year}&gameId={game_id}'
+
+    response = HTTP_Client.get(second_url, headers=headers)
+    jsonResponse = response.json()
+    # print(jsonResponse[0]['teams'][1])
+    for data_set in jsonResponse[0]['teams']:
+        if data_set['school'] == away_team:
+            away_team_statholder = data_set
+        else:
+            home_team_statholder = data_set
     
+    # print('this is the AWAY TEAM', away_team_statholder)
+    # print('\n-------HOME TEAM------\n', home_team_statholder)
+
+    for stats in away_team_statholder['stats']:
+        if stats['category'] == 'netPassingYards':
+            my_data['away_passing_yards'] = stats['stat']
+        if stats['category'] == 'rushingYards':
+            my_data['away_rushing_yards'] = stats['stat']
+        if stats['category'] == 'turnovers':
+            my_data['away_turnovers'] = stats['stat']
+        if stats['category'] == 'qbHurries':
+            my_data['away_qb_hurries'] = stats['stat']
+        if stats['category'] == 'sacks':
+            my_data['away_sacks'] = stats['stat']
+        if stats['category'] == 'possessionTime':
+            my_data['away_time_of_possession'] = stats['stat']
+
+    for stats in home_team_statholder['stats']:
+        if stats['category'] == 'netPassingYards':
+            my_data['home_passing_yards'] = stats['stat']
+        if stats['category'] == 'rushingYards':
+            my_data['home_rushing_yards'] = stats['stat']
+        if stats['category'] == 'turnovers':
+            my_data['home_turnovers'] = stats['stat']
+        if stats['category'] == 'qbHurries':
+            my_data['home_qb_hurries'] = stats['stat']
+        if stats['category'] == 'sacks':
+            my_data['home_sacks'] = stats['stat']
+        if stats['category'] == 'possessionTime':
+            my_data['home_time_of_possession'] = stats['stat']
+            
+    print(my_data)
 
     return JsonResponse(my_data)
 

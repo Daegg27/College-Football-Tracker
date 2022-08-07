@@ -11,6 +11,23 @@ body {
   height: 50px;
 }
 
+#season-year {
+  font-size: 15px;
+}
+
+table, th, td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+table {
+    margin: auto;
+    width: 50% !important; 
+}
+
+.conference-name {
+  padding-top: 10px;
+}
 
 
 
