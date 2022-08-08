@@ -16,7 +16,8 @@ function Game(props){
             gameID: currentGame.id,
             away_team: currentGame.away_team,
             home_team: currentGame.home_team,
-            venue_id: currentGame.venue_id
+            venue_id: currentGame.venue_id,
+            start_time: currentGame.start_date
         }).then((response) => {
             console.log(response)
             setInformation(response.data)

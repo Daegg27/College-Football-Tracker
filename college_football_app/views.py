@@ -1,4 +1,7 @@
 from inspect import Parameter
+from pydoc import resolve
+from time import time
+from tracemalloc import start
 from unicodedata import category
 from xxlimited import new
 from django.shortcuts import render
@@ -11,6 +14,12 @@ from dotenv import load_dotenv
 import os
 import json
 import requests as HTTP_Client 
+from datetime import datetime
+import dateutil
+import dateutil.parser
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 
 load_dotenv()
@@ -114,9 +123,11 @@ def find_team(request):
 def fetchInformation(request, gameID):
     
     year = request.data['year']
+    venue_id = request.data['venue_id']
     game_id = request.data['gameID']
     away_team = request.data['away_team']
     home_team = request.data['home_team']
+    start_date = request.data['start_time']
 
     url = f'https://api.collegefootballdata.com/teams/fbs?year={year}'
 
@@ -179,7 +190,34 @@ def fetchInformation(request, gameID):
         if stats['category'] == 'possessionTime':
             my_data['home_time_of_possession'] = stats['stat']
             
-    print(my_data)
+    third_url = 'https://api.collegefootballdata.com/venues'
+    response = HTTP_Client.get(third_url, headers=headers)
+    jsonResponse = response.json()
+
+    for stadium in jsonResponse:
+        if stadium['id'] == venue_id:
+            my_data['stadium_name'] = stadium['name']
+            stadium_zip_code = stadium['zip']
+            time_zone = stadium['timezone']
+
+    dt = dateutil.parser.parse(start_date)
+    dt_conversion = dt.astimezone(dateutil.tz.gettz(time_zone)) # Converts to the proper time zone
+   
+    print(dt_conversion)
+    time_array = str(dt_conversion).split() # Seperates the date from the time
+    
+    day_of_game = time_array[0]
+    start_time = time_array[1].split('-')[0]
+    # print(f'The game was played on {day_of_game} at {start_time} at {my_data["stadium_name"]}')
+
+    fourth_url = 'http://api.weatherapi.com/v1/history.json' 
+    response = HTTP_Client.get(fourth_url, params={
+        'key': os.environ['key'],
+        'q': stadium_zip_code,
+        'dt': day_of_game
+    })
+    jsonResponse = response.json()
+    print(jsonResponse['forecast']['hour'])
 
     return JsonResponse(my_data)
 
