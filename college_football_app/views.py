@@ -198,6 +198,8 @@ def fetchInformation(request, gameID):
         if stadium['id'] == venue_id:
             my_data['stadium_name'] = stadium['name']
             stadium_zip_code = stadium['zip']
+            latitude = stadium['location']['y']
+            longitude = stadium['location']['x']
             time_zone = stadium['timezone']
 
     dt = dateutil.parser.parse(start_date)
@@ -209,6 +211,20 @@ def fetchInformation(request, gameID):
     day_of_game = time_array[0]
     start_time = time_array[1].split('-')[0]
     # print(f'The game was played on {day_of_game} at {start_time} at {my_data["stadium_name"]}')
+    
+    if start_time[3] != 0:
+        split_time = start_time.split(':')
+        split_time[1] = '00'
+        split_time.pop()
+        start_time = ':'.join(split_time)
+        print(split_time)
+    else:
+        split_time = start_time.split(':')
+        split_time.pop()
+        start_time = ':'.join(split_time)
+        print(split_time)
+        
+    print(start_time)
 
     fourth_url = 'http://api.weatherapi.com/v1/history.json' 
     response = HTTP_Client.get(fourth_url, params={
@@ -217,8 +233,20 @@ def fetchInformation(request, gameID):
         'dt': day_of_game
     })
     jsonResponse = response.json()
-    print(jsonResponse['forecast']['hour'])
+    # print(jsonResponse['forecast']['forecastday'][0]['hour'])
 
+    for hour in jsonResponse['forecast']['forecastday'][0]['hour']:
+        check_time = hour['time'].split()
+        if check_time[1] == start_time:
+            my_data['weather_condition'] = hour['condition']['text']
+            my_data['temperature'] = round(hour['temp_f'])
+            my_data['wind_speed'] = round(hour['wind_mph'])
+            my_data['humidity'] = hour['humidity']
+            my_data['local_time'] = start_time
+            # print(hour)
+
+    print(my_data)
+ 
     return JsonResponse(my_data)
 
 @api_view(['GET'])

@@ -98,6 +98,12 @@ function Game(props){
                             <Col sm='6'><h1>Time of Possesion: {information.away_time_of_possession}</h1></Col>
                             <Col sm='6'><h1>Time of Possesion: {information.home_time_of_possession}</h1></Col>
                         </Row>
+                        <hr />
+                        <h1>{information.stadium_name}</h1>
+                        <h4>Kickoff was at {information.local_time} with {information.weather_condition} conditions!</h4>
+                        <h4>Temperature: {information.temperature}F</h4>
+                        <h5>Humidity: {information.humidity}%</h5>
+                        <h6>Wind Speed: {information.wind_speed}MPH</h6>
                     </div> : <h1>Loading..</h1>} 
             </Container>
             
