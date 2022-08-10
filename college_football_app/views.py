@@ -3,6 +3,7 @@ from pydoc import resolve
 from time import time
 from tracemalloc import start
 from unicodedata import category
+from urllib import response
 from xxlimited import new
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -256,18 +257,21 @@ def fetch_information(request, gameID):
 def save_game(request, gameID):
     
     home_team = request.data['home_team']
+    home_team_score = request.data['home_team_score']
     away_team = request.data['away_team']
+    away_team_score = request.data['away_team_score']
     user_email = request.data['email']
     year = request.data['year']
+    week = request.data['week']
 
     registered_user = User.objects.get(username = user_email)
     
-    new_classic_game = ClassicGame(user=registered_user, game_id = gameID, home_team = home_team, away_team = away_team, year = year)
+    new_classic_game = ClassicGame(user=registered_user, game_id = gameID, home_team = home_team, home_team_score = home_team_score, away_team = away_team, away_team_score = away_team_score, year = year, week = week)
     new_classic_game.save()
 
     return JsonResponse({'Success': True})
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def find_saved_games(request):
     
     if request.GET.get('email'):
@@ -284,7 +288,28 @@ def find_saved_games(request):
 
         return JsonResponse({'classic_games': classic_games})
     else:
-        return JsonResponse({'Success': False})
+        game_id = request.data['gameID']
+        year = request.data['year']
+
+        url = f'https://api.collegefootballdata.com/games?year={year}&id={game_id}'
+
+        headers = {
+
+        "Authorization": f"Bearer {os.environ['token']}"
+
+        }
+
+        response = HTTP_Client.get(url, headers=headers)
+        jsonResponse = response.json()
+        game_data = jsonResponse[0]
+
+        
+        return JsonResponse({'game_data': game_data})
+        
+
+@api_view(['POST'])
+def set_game(request):
+    pass
 
     
     

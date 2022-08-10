@@ -27,11 +27,14 @@ function Game(props){
     function SaveGame(){
         axios.put(`search_for_team/${currentGame.id}/save`, {
             away_team: currentGame.away_team,
+            away_team_score: currentGame.away_points,
             home_team: currentGame.home_team,
+            home_team_score: currentGame.home_points,
             email: user.email,
-            year: currentGame.season
+            year: currentGame.season,
+            week: currentGame.week
         }).then((response) => {
-            console.log(response)
+            window.alert('You have succesfully saved this game!')
         })
     }
 

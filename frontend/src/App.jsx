@@ -38,6 +38,7 @@ function App() {
   const [team, setTeams] = useState(null)
   const [wins, setWins] = useState(null)
   const [losses, setLosses] = useState(null)
+  const [currentGame, setCurrentGame] = useState(null)
   const [savedGames, setSavedGames] = useState([])
 
 
@@ -51,7 +52,7 @@ function App() {
 
   function fetchSavedGames(){
     if (user){
-      axios.get('/saved_games', { params: { email: user.email } }).then((response) => {
+      axios.get('/saved_games/', { params: { email: user.email } }).then((response) => {
         setSavedGames(response.data.classic_games)
         console.log(response)
     })
@@ -78,9 +79,9 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/signup' element={<SignUpPage/>} />
-          <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses}/>} />
-          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user}/>}/>
-          <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames}/> : <SignUpPage />} />
+          <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses} setCurrentGame={setCurrentGame}/>} />
+          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user} currentGame={currentGame} setCurrentGame={setCurrentGame}/>}/>
+          <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames} setCurrentGame={setCurrentGame}/> : <SignUpPage />} />
         </Routes>
       </Router>  
     </div>

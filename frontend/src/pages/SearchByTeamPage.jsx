@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 
 function SearchByTeamPage(props){
-    const {setGames, setTeams, setWins, setLosses, games, team, wins, losses} = props
+    const {setGames, setTeams, setWins, setLosses, games, team, wins, losses, setCurrentGame} = props
 
 
 
@@ -30,6 +30,7 @@ function SearchByTeamPage(props){
     useEffect(() => { 
         console.log('resetting list of games')
         setGames([])
+        setCurrentGame(null)
         setTeams(null)
     }, [])
 

@@ -11,5 +11,5 @@ urlpatterns = [
    path('search_for_team/', views.find_team),
    path('search_for_team/<int:gameID>', views.fetch_information),
    path('search_for_team/<int:gameID>/save', views.save_game),
-   path('saved_games', views.find_saved_games)
+   path('saved_games/', views.find_saved_games)
 ]

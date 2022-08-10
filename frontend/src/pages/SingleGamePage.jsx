@@ -3,17 +3,19 @@ import { useState, useEffect } from 'react'
 import Game from '../components/Game';
 
 function SingleGamePage(props){
-    const {team, games, user} = props
+    const {team, games, user, currentGame, setCurrentGame} = props
 
     let {gameID} = useParams() 
-    const [currentGame, setCurrentGame] = useState(null)
+    
 
     function FetchProperGame(){
-        for (let game of games){
-            if (gameID == game.id){
-                console.log(game)
-                setCurrentGame(game)
-                // console.log('this is the game', game.id)
+        if (games){
+            for (let game of games){
+                if (gameID == game.id){
+                    console.log(game)
+                    setCurrentGame(game)
+                    // console.log('this is the game', game.id)
+                }
             }
         }
     }
