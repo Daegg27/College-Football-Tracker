@@ -9,6 +9,7 @@ urlpatterns = [
    path('logout/', views.log_out),
    path('whoami', views.who_am_i),
    path('search_for_team/', views.find_team),
-   path('search_for_team/<int:gameID>', views.fetchInformation),
-   path('test/', views.test)
+   path('search_for_team/<int:gameID>', views.fetch_information),
+   path('search_for_team/<int:gameID>/save', views.save_game),
+   path('saved_games', views.find_saved_games)
 ]

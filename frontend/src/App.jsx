@@ -9,6 +9,7 @@ import axios from 'axios'
 import SearchByTeamPage from './pages/SearchByTeamPage'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import SingleGamePage from './pages/SingleGamePage'
+import SavedGamePage from './pages/SavedGamesPage'
 
 
 
@@ -37,18 +38,37 @@ function App() {
   const [team, setTeams] = useState(null)
   const [wins, setWins] = useState(null)
   const [losses, setLosses] = useState(null)
+  const [savedGames, setSavedGames] = useState([])
 
 
   const whoAmI = async () => {
     const response = await axios.get('/whoami')
     const user = response.data && response.data[0] && response.data[0].fields
-    console.log('user from whoami? ', user, response)
+    console.log('user from whoami? ', user)
+    console.log('-------THIS IS THE RESPOSNE-----', response)
     setUser(user)
+  }
+
+  function fetchSavedGames(){
+    if (user){
+      axios.get('/saved_games', { params: { email: user.email } }).then((response) => {
+        setSavedGames(response.data.classic_games)
+        console.log(response)
+    })
+    }
+    else
+    {
+      setSavedGames([]) 
+    }
   }
 
   useEffect(()=>{
     whoAmI()
   }, [])
+
+  useEffect(fetchSavedGames, [user])
+
+  
 
 
   return (
@@ -59,7 +79,8 @@ function App() {
           <Route path='/' element={<HomePage/>} />
           <Route path='/signup' element={<SignUpPage/>} />
           <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses}/>} />
-          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games}/>}/>
+          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user}/>}/>
+          <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames}/> : <SignUpPage />} />
         </Routes>
       </Router>  
     </div>

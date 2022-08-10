@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from .models import AppUser as User
+from .models import ClassicGame
 from dotenv import load_dotenv
 import os
 import json
@@ -17,7 +18,9 @@ import requests as HTTP_Client
 from datetime import datetime
 import dateutil
 import dateutil.parser
+from django.forms.models import model_to_dict
 import pprint
+
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -120,7 +123,7 @@ def find_team(request):
     return JsonResponse({'success': True, 'list_of_games': all_games, 'team':team, 'wins': wins, 'losses':losses})
 
 @api_view(['POST'])
-def fetchInformation(request, gameID):
+def fetch_information(request, gameID):
     
     year = request.data['year']
     venue_id = request.data['venue_id']
@@ -129,7 +132,7 @@ def fetchInformation(request, gameID):
     home_team = request.data['home_team']
     start_date = request.data['start_time']
 
-    url = f'https://api.collegefootballdata.com/teams/fbs?year={year}'
+    url = f'https://api.collegefootballdata.com/teams/fbs?year={year}' # Searches all FBS teams by year
 
     headers = {
         "Authorization": f"Bearer {os.environ['token']}"
@@ -148,7 +151,7 @@ def fetchInformation(request, gameID):
             my_data['home_team_image'] = team['logos'][0]
             my_data['home_mascot'] = team['mascot']
 
-    second_url = f'https://api.collegefootballdata.com/games/teams?year={year}&gameId={game_id}'
+    second_url = f'https://api.collegefootballdata.com/games/teams?year={year}&gameId={game_id}' # Searches by gameID for status of corresponding game
 
     response = HTTP_Client.get(second_url, headers=headers)
     jsonResponse = response.json()
@@ -190,12 +193,12 @@ def fetchInformation(request, gameID):
         if stats['category'] == 'possessionTime':
             my_data['home_time_of_possession'] = stats['stat']
             
-    third_url = 'https://api.collegefootballdata.com/venues'
+    third_url = 'https://api.collegefootballdata.com/venues' # Retrieves all information for stadiums
     response = HTTP_Client.get(third_url, headers=headers)
     jsonResponse = response.json()
 
     for stadium in jsonResponse:
-        if stadium['id'] == venue_id:
+        if stadium['id'] == venue_id: # Checks if the ID matches the venue ID in the game
             my_data['stadium_name'] = stadium['name']
             stadium_zip_code = stadium['zip']
             latitude = stadium['location']['y']
@@ -212,13 +215,13 @@ def fetchInformation(request, gameID):
     start_time = time_array[1].split('-')[0]
     # print(f'The game was played on {day_of_game} at {start_time} at {my_data["stadium_name"]}')
     
-    if start_time[3] != 0:
+    if start_time[3] != 0: # Grabs the time from the bottom of the hour for the weather API 
         split_time = start_time.split(':')
         split_time[1] = '00'
-        split_time.pop()
+        split_time.pop() # Removes the seconds from the game time 
         start_time = ':'.join(split_time)
         print(split_time)
-    else:
+    else: # Pulls the seconds off the time regardless
         split_time = start_time.split(':')
         split_time.pop()
         start_time = ':'.join(split_time)
@@ -226,7 +229,7 @@ def fetchInformation(request, gameID):
         
     print(start_time)
 
-    fourth_url = 'http://api.weatherapi.com/v1/history.json' 
+    fourth_url = 'http://api.weatherapi.com/v1/history.json' # Grabs the forecast data from the day of the game 
     response = HTTP_Client.get(fourth_url, params={
         'key': os.environ['key'],
         'q': stadium_zip_code,
@@ -249,20 +252,39 @@ def fetchInformation(request, gameID):
  
     return JsonResponse(my_data)
 
-@api_view(['GET'])
-def test(request):
+@api_view(['PUT'])
+def save_game(request, gameID):
     
-    # url = f'http://api.weatherapi.com/v1/current.json?key={os.environ['key']}&q=99004'
-    url = 'http://api.weatherapi.com/v1/current.json'
+    home_team = request.data['home_team']
+    away_team = request.data['away_team']
+    user_email = request.data['email']
+    year = request.data['year']
 
-    response = HTTP_Client.get(url, params={
-        'key': os.environ['key'],
-        'q':'85001'
-    })
-    jsonResponse = response.json()
-    print(jsonResponse)
+    registered_user = User.objects.get(username = user_email)
+    
+    new_classic_game = ClassicGame(user=registered_user, game_id = gameID, home_team = home_team, away_team = away_team, year = year)
+    new_classic_game.save()
 
-    return JsonResponse({'success': True})
+    return JsonResponse({'Success': True})
+
+@api_view(['GET'])
+def find_saved_games(request):
+    
+    if request.GET.get('email'):
+        user_email = request.GET['email']
+        user = User.objects.get(email = user_email)
+        
+        query_set = ClassicGame.objects.filter(user = user)
+        classic_games = []
+
+        for game in query_set:
+            new_game = model_to_dict(game)
+            classic_games.append(new_game)
+
+
+        return JsonResponse({'classic_games': classic_games})
+    else:
+        return JsonResponse({'Success': False})
 
     
     

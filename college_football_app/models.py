@@ -17,10 +17,11 @@ class AppUser(AbstractUser):
 class ClassicGame(models.Model):
 
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    stadium_name = models.CharField(max_length=100, null=True)
-    weather_at_kickoff = models.CharField(max_length=50, null=True)
+    game_id = models.CharField(max_length=25)
     home_team = models.CharField(max_length=100)
-    home_team_score = models.IntegerField()
     away_team = models.CharField(max_length=100)
-    away_team_score = models.IntegerField()
-    winning_team = models.CharField(max_length=100)
+    year = models.CharField(max_length=4)
+    class Meta:
+        # TODO: Use UniqueConstraint with constraints option instead
+        # See: https://docs.djangoproject.com/en/4.0/ref/models/options/#unique-together
+        unique_together = (("user", "game_id"))

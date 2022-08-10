@@ -1,12 +1,12 @@
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
 
 
 function Game(props){
-    const {currentGame} = props
+    const {currentGame, user} = props
 
     const [information, setInformation] = useState(null)
 
@@ -21,6 +21,17 @@ function Game(props){
         }).then((response) => {
             console.log(response)
             setInformation(response.data)
+        })
+    }
+
+    function SaveGame(){
+        axios.put(`search_for_team/${currentGame.id}/save`, {
+            away_team: currentGame.away_team,
+            home_team: currentGame.home_team,
+            email: user.email,
+            year: currentGame.season
+        }).then((response) => {
+            console.log(response)
         })
     }
 
@@ -104,6 +115,8 @@ function Game(props){
                         <h4>Temperature: {information.temperature}F</h4>
                         <h5>Humidity: {information.humidity}%</h5>
                         <h6>Wind Speed: {information.wind_speed}MPH</h6>
+                        <hr />
+                        <button onClick={SaveGame}>SAVE</button>
                     </div> : <h1>Loading..</h1>} 
             </Container>
             
