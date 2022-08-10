@@ -307,9 +307,21 @@ def find_saved_games(request):
         return JsonResponse({'game_data': game_data})
         
 
-@api_view(['POST'])
-def set_game(request):
-    pass
+@api_view(['DELETE'])
+def remove_game(request):
+    
+    game_id = request.data['gameID']
+    user_email = request.data['userEmail']
+    
+    user = User.objects.get(email = user_email)
+
+    game = ClassicGame.objects.get(user = user, game_id = game_id)
+    ClassicGame.objects.filter(user = user, game_id = game_id).delete()
+
+    print(model_to_dict(game))
+    
+
+    return JsonResponse({"Success": True})
 
     
     

@@ -6,7 +6,7 @@ import axios from 'axios'
 
 
 function Game(props){
-    const {currentGame, user} = props
+    const {currentGame, user, setSavedGames} = props
 
     const [information, setInformation] = useState(null)
 
@@ -24,6 +24,13 @@ function Game(props){
         })
     }
 
+    function RefreshSavedGames(){
+        
+        axios.get('/saved_games/', { params: { email: user.email } }).then((response) => {
+            setSavedGames(response.data.classic_games)
+          })
+    }
+
     function SaveGame(){
         axios.put(`search_for_team/${currentGame.id}/save`, {
             away_team: currentGame.away_team,
@@ -35,6 +42,7 @@ function Game(props){
             week: currentGame.week
         }).then((response) => {
             window.alert('You have succesfully saved this game!')
+            RefreshSavedGames()
         })
     }
 
@@ -119,7 +127,7 @@ function Game(props){
                         <h5>Humidity: {information.humidity}%</h5>
                         <h6>Wind Speed: {information.wind_speed}MPH</h6>
                         <hr />
-                        <button onClick={SaveGame}>SAVE</button>
+                        {user && <button onClick={SaveGame}>SAVE</button>}
                     </div> : <h1>Loading..</h1>} 
             </Container>
             

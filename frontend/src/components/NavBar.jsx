@@ -5,7 +5,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import axios from 'axios'
 
 
-function NavBar() {
+function NavBar(props) {
+
+  const {user} = props
 
   function sendLogout(){
     axios.post('/logout/').then((response) => {
@@ -20,6 +22,7 @@ function NavBar() {
     <Navbar bg="light" expand="lg">
       <Container fluid>
         <Navbar.Brand href="#home">College Football</Navbar.Brand>
+        {user && <h6>Welcome, {user.email}</h6>}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">

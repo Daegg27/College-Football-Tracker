@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Game from '../components/Game';
 
 function SingleGamePage(props){
-    const {team, games, user, currentGame, setCurrentGame} = props
+    const {team, games, user, currentGame, setCurrentGame, setSavedGames} = props
 
     let {gameID} = useParams() 
     
@@ -25,7 +25,7 @@ function SingleGamePage(props){
 
     return (
         <div>
-            {currentGame != null && <Game currentGame={currentGame} user={user}/>}
+            {currentGame != null && <Game currentGame={currentGame} user={user} setSavedGames={setSavedGames}/>}
         </div>
     )
 

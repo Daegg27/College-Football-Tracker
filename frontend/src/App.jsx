@@ -45,8 +45,8 @@ function App() {
   const whoAmI = async () => {
     const response = await axios.get('/whoami')
     const user = response.data && response.data[0] && response.data[0].fields
-    console.log('user from whoami? ', user)
-    console.log('-------THIS IS THE RESPOSNE-----', response)
+    // console.log('user from whoami? ', user)
+    // console.log('-------THIS IS THE RESPOSNE-----', response)
     setUser(user)
   }
 
@@ -54,7 +54,7 @@ function App() {
     if (user){
       axios.get('/saved_games/', { params: { email: user.email } }).then((response) => {
         setSavedGames(response.data.classic_games)
-        console.log(response)
+        // console.log(response)
     })
     }
     else
@@ -74,14 +74,14 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar />
+      <NavBar user={user}/>
       <Router> 
         <Routes>
           <Route path='/' element={<HomePage/>} />
           <Route path='/signup' element={<SignUpPage/>} />
           <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses} setCurrentGame={setCurrentGame}/>} />
-          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user} currentGame={currentGame} setCurrentGame={setCurrentGame}/>}/>
-          <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames} setCurrentGame={setCurrentGame}/> : <SignUpPage />} />
+          <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user} currentGame={currentGame} setCurrentGame={setCurrentGame} setSavedGames={setSavedGames}/>}/>
+          <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames} setCurrentGame={setCurrentGame} user={user}/> : <SignUpPage />} />
         </Routes>
       </Router>  
     </div>

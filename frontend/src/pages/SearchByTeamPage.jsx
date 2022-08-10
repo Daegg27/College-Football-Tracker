@@ -28,7 +28,7 @@ function SearchByTeamPage(props){
     console.log(games)
 
     useEffect(() => { 
-        console.log('resetting list of games')
+        // console.log('resetting list of games')
         setGames([])
         setCurrentGame(null)
         setTeams(null)
