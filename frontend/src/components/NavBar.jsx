@@ -32,6 +32,11 @@ function NavBar(props) {
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="/#/search_by_team">Search by Team</NavDropdown.Item>
               <NavDropdown.Item href="/#/saved_games">Saved Games</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="/#/match_history">
+                Match History
+              </NavDropdown.Item>
+
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

@@ -10,6 +10,7 @@ import SearchByTeamPage from './pages/SearchByTeamPage'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import SingleGamePage from './pages/SingleGamePage'
 import SavedGamePage from './pages/SavedGamesPage'
+import MatchHistoryPage from './pages/MatchHistoryPage'
 
 
 
@@ -40,6 +41,7 @@ function App() {
   const [losses, setLosses] = useState(null)
   const [currentGame, setCurrentGame] = useState(null)
   const [savedGames, setSavedGames] = useState([])
+  const [teamNames, setTeamNames] = useState(null)
 
 
   const whoAmI = async () => {
@@ -63,11 +65,27 @@ function App() {
     }
   }
 
+
+  function GrabTeamNames(){
+    axios.get('/populate_teams').then((response) => {
+        setTeamNames(response.data.teams)
+        console.log(teamNames)
+    })
+}
+
+  function test(){
+    axios.get('/t')
+  }
+
   useEffect(()=>{
     whoAmI()
   }, [])
 
   useEffect(fetchSavedGames, [user])
+
+  useEffect(GrabTeamNames, [])
+
+  useEffect(test, [])
 
   
 
@@ -78,10 +96,11 @@ function App() {
       <Router> 
         <Routes>
           <Route path='/' element={<HomePage/>} />
-          <Route path='/signup' element={<SignUpPage/>} />
-          <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses} setCurrentGame={setCurrentGame}/>} />
+          <Route path='/signup' element={<SignUpPage teamNames={teamNames}/>} />
+          <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses} setCurrentGame={setCurrentGame} teamNames={teamNames}/>} />
           <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user} currentGame={currentGame} setCurrentGame={setCurrentGame} setSavedGames={setSavedGames}/>}/>
           <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames} setCurrentGame={setCurrentGame} user={user}/> : <SignUpPage />} />
+          <Route path='/match_history' element={<MatchHistoryPage teamNames={teamNames}/>}></Route>
         </Routes>
       </Router>  
     </div>

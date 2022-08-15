@@ -12,5 +12,7 @@ urlpatterns = [
    path('search_for_team/<int:gameID>', views.fetch_information),
    path('search_for_team/<int:gameID>/save', views.save_game),
    path('saved_games/', views.find_saved_games),
-   path('saved_games/delete', views.remove_game)
+   path('saved_games/delete', views.remove_game),
+   path('populate_teams/', views.grab_teams),
+   path('t', views.test)
 ]

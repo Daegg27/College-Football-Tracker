@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 
 function SearchByTeamPage(props){
-    const {setGames, setTeams, setWins, setLosses, games, team, wins, losses, setCurrentGame} = props
+    const {setGames, setTeams, setWins, setLosses, games, team, wins, losses, setCurrentGame, teamNames} = props
 
 
 
@@ -40,8 +40,14 @@ function SearchByTeamPage(props){
             <Container id='secondary-container'>
                 <h1><strong>Please search for whatever team you'd like!</strong></h1>
                 <form onSubmit={searchForTeam}>
-                    <label for="team-name">Please enter a school name:</label><br></br>
-                    <input type="text" id='team-name'/><br></br>
+                    <label for="team-name">Please select a school name:</label><br></br>
+                    <select name="teams" id="team-name">
+                        {teamNames.map((team) => {
+                            return (
+                                <option value={team.school}>{team.school}</option>
+                            )
+                        })}
+                    </select><br></br>
                     <label for="season-year">What year are you looking for?</label><br></br>
                     <input type="text" id='season-year'/><br></br>
                     <div className="py-2"></div>

@@ -1,3 +1,4 @@
+from email import header
 from inspect import Parameter
 from pydoc import resolve
 from time import time
@@ -322,6 +323,43 @@ def remove_game(request):
     
 
     return JsonResponse({"Success": True})
+
+@api_view(['GET'])
+def grab_teams(request):
+    
+    url = 'https://api.collegefootballdata.com/teams/fbs?year=2021'
+
+    headers = {
+
+        "Authorization": f"Bearer {os.environ['token']}"
+
+        }
+
+    response = HTTP_Client.get(url, headers=headers)
+    jsonResponse = response.json()
+    
+    return JsonResponse({'teams': jsonResponse})
+
+def test(response):
+    
+    url = 'https://api.collegefootballdata.com/teams/matchup?team1=Michigan&team2=Ohio%20State'
+
+    headers = {
+
+        "Authorization": f"Bearer {os.environ['token']}"
+
+        }
+
+    response = HTTP_Client.get(url, headers=headers)
+    jsonResponse = response.json()
+
+    print(jsonResponse)
+
+    return JsonResponse({'Success': True})
+
+
+
+    
 
     
     

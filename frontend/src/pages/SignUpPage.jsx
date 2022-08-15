@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Container from 'react-bootstrap/Container'
 
 
-function SignUpPage(){
+function SignUpPage(props){
+    const {teamNames} = props
+
+
 
 
     function SignUp(event){
