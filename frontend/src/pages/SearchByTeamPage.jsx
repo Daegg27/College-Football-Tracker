@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Container from 'react-bootstrap/Container';
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link } from "react-router-dom"
 
 
@@ -19,6 +19,10 @@ function SearchByTeamPage(props){
             alert('Information is only available for games past 2004')
             return null
         }
+        else if (season.value > 2021){
+            alert('The 2022 season has yet to begin')
+            return null
+        }
 
         axios.post('search_for_team/', {
             'team': team_name.value,
@@ -31,6 +35,9 @@ function SearchByTeamPage(props){
         })
     }
     console.log(games)
+    
+    
+
 
     useEffect(() => { 
         // console.log('resetting list of games')
@@ -38,6 +45,7 @@ function SearchByTeamPage(props){
         setCurrentGame(null)
         setTeams(null)
     }, [])
+
 
 
     return (
@@ -54,7 +62,7 @@ function SearchByTeamPage(props){
                         })}
                     </select><br></br>
                     <label for="season-year">What year are you looking for?</label><br></br>
-                    <input type="text" id='season-year'/><br></br>
+                    <input maxLength='4' type="text" id='season-year' placeholder='Pick between 2004-2021'/><br></br>
                     <div className="py-2"></div>
                     <button type='SUBMIT'>SUBMIT</button>
                 </form>

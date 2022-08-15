@@ -1,13 +1,14 @@
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 
 function MatchHistoryPage(props){
     const {teamNames} = props
     
     const[matchHistory, setMatchHistory] = useState(null)
+    const isMounted = useRef(false)
 
     function getMatchHistory(event){
         event.preventDefault()
@@ -27,6 +28,19 @@ function MatchHistoryPage(props){
             setMatchHistory(response.data.information)
         })
       }
+
+    function testSomething(){
+        console.log(matchHistory.games[matchHistory.games.length - 1])
+    }
+
+    useEffect(() => {
+        if (isMounted.current) {
+          testSomething();
+        } else {
+          isMounted.current = true;
+        }
+      }, [matchHistory]);
+    
 
     return (
         <div>
