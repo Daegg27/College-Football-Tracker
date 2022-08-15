@@ -14,5 +14,5 @@ urlpatterns = [
    path('saved_games/', views.find_saved_games),
    path('saved_games/delete', views.remove_game),
    path('populate_teams/', views.grab_teams),
-   path('t', views.test)
+   path('match_history', views.fetch_match_history)
 ]

@@ -122,11 +122,18 @@ function Game(props){
                         </Row>
                         <hr />
                         <h1>{information.stadium_name}</h1>
-                        <h4>Kickoff was at {information.local_time} with {information.weather_condition} conditions!</h4>
-                        <h4>Temperature: {information.temperature}F</h4>
-                        <h5>Humidity: {information.humidity}%</h5>
-                        <h6>Wind Speed: {information.wind_speed}MPH</h6>
-                        <hr />
+                        {information.weather_available ? 
+                        <div>
+                            <h2>Weather information is only available for games past 2010</h2>
+                            <hr></hr>
+                        </div> : 
+                        <div>
+                            <h4>Kickoff was at {information.local_time} with {information.weather_condition} conditions!</h4>
+                            <h4>Temperature: {information.temperature}F</h4>
+                            <h5>Humidity: {information.humidity}%</h5>
+                            <h6>Wind Speed: {information.wind_speed}MPH</h6>
+                            <hr />
+                        </div>}
                         {user && <button onClick={SaveGame}>SAVE</button>}
                     </div> : <h1>Loading..</h1>} 
             </Container>

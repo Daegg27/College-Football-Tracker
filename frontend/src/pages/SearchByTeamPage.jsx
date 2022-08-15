@@ -15,6 +15,11 @@ function SearchByTeamPage(props){
         let team_name = document.getElementById('team-name')
         let season = document.getElementById('season-year')
 
+        if (season.value < 2004){
+            alert('Information is only available for games past 2004')
+            return null
+        }
+
         axios.post('search_for_team/', {
             'team': team_name.value,
             'year': season.value

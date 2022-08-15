@@ -46,17 +46,17 @@ def sign_up(request):
 
 @api_view(['POST'])
 def log_in(request):
-    print(dir(request))
-    print(dir(request._request))
+    # print(dir(request))
+    # print(dir(request._request))
 
     # DRF assumes that the body is JSON, and automatically parses it into a dictionary at request.data
     email = request.data['email']
     password = request.data['password']
     # user = authenticate(username=email, password=password, email=email)
     user = authenticate(username=email, password=password)
-    print('user?')
-    print(user.email)
-    print(user.password)
+    # print('user?')
+    # print(user.email)
+    # print(user.password)
     if user is not None:
         if user.is_active:
             try:
@@ -210,7 +210,7 @@ def fetch_information(request, gameID):
     dt = dateutil.parser.parse(start_date)
     dt_conversion = dt.astimezone(dateutil.tz.gettz(time_zone)) # Converts to the proper time zone
    
-    print(dt_conversion)
+    # print(dt_conversion)
     time_array = str(dt_conversion).split() # Seperates the date from the time
     
     day_of_game = time_array[0]
@@ -222,35 +222,37 @@ def fetch_information(request, gameID):
         split_time[1] = '00'
         split_time.pop() # Removes the seconds from the game time 
         start_time = ':'.join(split_time)
-        print(split_time)
+        # print(split_time)
     else: # Pulls the seconds off the time regardless
         split_time = start_time.split(':')
         split_time.pop()
         start_time = ':'.join(split_time)
-        print(split_time)
+        # print(split_time)
         
-    print(start_time)
+    # print(start_time)
+   
+    try: # This allows me to prevent failure if weather data is not available
+        fourth_url = 'http://api.weatherapi.com/v1/history.json' # Grabs the forecast data from the day of the game 
+        response = HTTP_Client.get(fourth_url, params={
+            'key': os.environ['key'],
+            'q': stadium_zip_code,
+            'dt': day_of_game
+        })
+        jsonResponse = response.json()
+        # print(jsonResponse['forecast']['forecastday'][0]['hour'])
 
-    fourth_url = 'http://api.weatherapi.com/v1/history.json' # Grabs the forecast data from the day of the game 
-    response = HTTP_Client.get(fourth_url, params={
-        'key': os.environ['key'],
-        'q': stadium_zip_code,
-        'dt': day_of_game
-    })
-    jsonResponse = response.json()
-    # print(jsonResponse['forecast']['forecastday'][0]['hour'])
-
-    for hour in jsonResponse['forecast']['forecastday'][0]['hour']:
-        check_time = hour['time'].split()
-        if check_time[1] == start_time:
-            my_data['weather_condition'] = hour['condition']['text']
-            my_data['temperature'] = round(hour['temp_f'])
-            my_data['wind_speed'] = round(hour['wind_mph'])
-            my_data['humidity'] = hour['humidity']
-            my_data['local_time'] = start_time
-            # print(hour)
-
-    print(my_data)
+        for hour in jsonResponse['forecast']['forecastday'][0]['hour']:
+            check_time = hour['time'].split()
+            if check_time[1] == start_time:
+                my_data['weather_condition'] = hour['condition']['text']
+                my_data['temperature'] = round(hour['temp_f'])
+                my_data['wind_speed'] = round(hour['wind_mph'])
+                my_data['humidity'] = hour['humidity']
+                my_data['local_time'] = start_time
+                # print(hour)
+    except:
+        my_data['weather_available'] = True
+    
  
     return JsonResponse(my_data)
 
@@ -319,7 +321,7 @@ def remove_game(request):
     game = ClassicGame.objects.get(user = user, game_id = game_id)
     ClassicGame.objects.filter(user = user, game_id = game_id).delete()
 
-    print(model_to_dict(game))
+    # print(model_to_dict(game))
     
 
     return JsonResponse({"Success": True})
@@ -340,9 +342,15 @@ def grab_teams(request):
     
     return JsonResponse({'teams': jsonResponse})
 
-def test(response):
+@api_view(['GET'])
+def fetch_match_history(request):
     
-    url = 'https://api.collegefootballdata.com/teams/matchup?team1=Michigan&team2=Ohio%20State'
+    team1 = request.GET['teamone']
+    team2 = request.GET['teamtwo']
+
+
+
+    url = f'https://api.collegefootballdata.com/teams/matchup?team1={team1}&team2={team2}'
 
     headers = {
 
@@ -353,9 +361,9 @@ def test(response):
     response = HTTP_Client.get(url, headers=headers)
     jsonResponse = response.json()
 
-    print(jsonResponse)
+    # print(jsonResponse)
 
-    return JsonResponse({'Success': True})
+    return JsonResponse({'information': jsonResponse})
 
 
 

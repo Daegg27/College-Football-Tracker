@@ -37,7 +37,7 @@ function SignUpPage(props){
     return (
         <div>
             <Container id='secondary-container'>
-            <h1><strong>This is the sign up page, please create an account for full access</strong></h1>
+            <h1><strong>Please create an account for full access</strong></h1>
                 <form>
                     <label for='email'>Please enter your email:</label><br></br>
                     <input type="text" id="email" placeholder='enter email'/><br></br>

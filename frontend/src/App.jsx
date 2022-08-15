@@ -73,10 +73,6 @@ function App() {
     })
 }
 
-  function test(){
-    axios.get('/t')
-  }
-
   useEffect(()=>{
     whoAmI()
   }, [])
@@ -84,8 +80,6 @@ function App() {
   useEffect(fetchSavedGames, [user])
 
   useEffect(GrabTeamNames, [])
-
-  useEffect(test, [])
 
   
 

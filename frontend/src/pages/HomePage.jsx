@@ -7,9 +7,9 @@ function HomePage(){
 
     return (
     <div>
+        <Container id='secondary-container'>
         <div className="py-1"></div>
         <h1>The exclusive place for everything College Football!</h1>
-        <Container>
             <div className="py-4"></div>
             <Row>
                 <Col sm='6'><img src="https://media.pff.com/2022/02/Image-from-iOS.jpg" alt="Reload the page" className='homepage-image'/></Col>
@@ -18,6 +18,7 @@ function HomePage(){
                     <h3 id='second-subheader'>Don't let the analyst tell you what defines a classic game. Create your own custom list by creating a free account today!</h3>
                 </Col>
             </Row>
+            <div className="py-2"></div>
         </Container>
     </div>
     )
