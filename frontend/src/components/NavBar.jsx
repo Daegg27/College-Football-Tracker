@@ -32,11 +32,6 @@ function NavBar(props) {
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="/#/search_by_team">Search by Team</NavDropdown.Item>
               <NavDropdown.Item href="/#/saved_games">Saved Games</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
