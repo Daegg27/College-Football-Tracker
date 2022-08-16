@@ -94,7 +94,7 @@ function App() {
           <Route path='/search_by_team' element={<SearchByTeamPage setGames={setGames} setTeams={setTeams} setWins={setWins} setLosses={setLosses} games={games} team={team} wins={wins} losses={losses} setCurrentGame={setCurrentGame} teamNames={teamNames}/>} />
           <Route path='/search_by_team/:gameID' element={<SingleGamePage team={team} games={games} user={user} currentGame={currentGame} setCurrentGame={setCurrentGame} setSavedGames={setSavedGames}/>}/>
           <Route path='/saved_games' element={user ? <SavedGamePage savedGames={savedGames} setCurrentGame={setCurrentGame} user={user}/> : <SignUpPage />} />
-          <Route path='/match_history' element={<MatchHistoryPage teamNames={teamNames}/>}></Route>
+          <Route path='/match_history' element={<MatchHistoryPage teamNames={teamNames} setCurrentGame={setCurrentGame}/>}></Route>
         </Routes>
       </Router>  
     </div>

@@ -5,10 +5,10 @@ import { useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 
 function MatchHistoryPage(props){
-    const {teamNames} = props
+    const {teamNames, setCurrentGame} = props
     
     const[matchHistory, setMatchHistory] = useState(null)
-    const isMounted = useRef(false)
+    const[latestGame, setLatestGame] = useState(null)
 
     function getMatchHistory(event){
         event.preventDefault()
@@ -26,21 +26,31 @@ function MatchHistoryPage(props){
         { params: { teamone: document.getElementById('team-one-name').value, teamtwo: document.getElementById('team-two-name').value } })
         .then((response) => {
             setMatchHistory(response.data.information)
+            if (response.data.last_game){
+                setLatestGame(response.data.last_game)
+            }
+            else
+            {
+                setLatestGame(null)
+            }
+            console.log(response)
         })
       }
 
-    function testSomething(){
-        console.log(matchHistory.games[matchHistory.games.length - 1])
+      function viewIndividualGame(gameID, year){
+        axios.post('saved_games/', {
+            gameID: gameID,
+            year: year
+        }).then((response) => {
+            setCurrentGame(response.data.game_data)
+            window.location.href = `/#/search_by_team/${gameID}`
+        })
     }
+    
 
     useEffect(() => {
-        if (isMounted.current) {
-          testSomething();
-        } else {
-          isMounted.current = true;
-        }
-      }, [matchHistory]);
-    
+        setCurrentGame(null)
+    }, null)
 
     return (
         <div>
@@ -66,10 +76,23 @@ function MatchHistoryPage(props){
                     <div className="py-2"></div>
                     <button type='submit'>SUBMIT</button>
                 </form>
-                <hr></hr>
                 {matchHistory ? 
                 <div>
-                    <h1><strong>{document.getElementById('team-one-name').value}</strong>: {matchHistory.team1Wins} wins || <strong>{document.getElementById('team-two-name').value}</strong>: {matchHistory.team2Wins} wins</h1>
+                    <hr></hr>
+                    <h1><strong>{document.getElementById('team-one-name').value}</strong>: {matchHistory.team1Wins} wins || <strong>{document.getElementById('team-two-name').value}</strong>: {matchHistory.team2Wins} wins <span id='season-year'>({matchHistory.ties} ties)</span></h1>
+                </div> : <br></br>}
+                <div className="py-3"></div>
+                {latestGame ?
+                <div>
+                    <hr></hr>
+                    <h1>Lastest Matchup: {latestGame.awayTeam}: <strong>{latestGame.awayScore}</strong> at {latestGame.homeTeam}: <strong>{latestGame.homeScore}</strong> <span id='season-year'>({latestGame.season}) {latestGame.seasonType == 'postseason' ? <span>(postseason)</span> : <br></br>}</span> </h1>
+                    {latestGame.season > 2003 ? 
+                    <div>
+                        <button onClick={() => viewIndividualGame(latestGame.game_id, latestGame.season)}>View Game</button> 
+                        <div className="py-1"></div>
+                    </div>
+                    : <br></br>
+                    }
                 </div> : <br></br>}
             </Container>
         </div>

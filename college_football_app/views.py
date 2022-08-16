@@ -101,7 +101,7 @@ def find_team(request):
     year = request.data['year']
     team = request.data['team']
 
-    url = f'https://api.collegefootballdata.com/games?year={year}&team={team}' # This is the inital call to grab the schedule 
+    url = f'https://api.collegefootballdata.com/games?year={year}&seasonType=both&&team={team}' # This is the inital call to grab the schedule 
 
     headers = {
         "Authorization": f"Bearer {os.environ['token']}"
@@ -361,9 +361,30 @@ def fetch_match_history(request):
     response = HTTP_Client.get(url, headers=headers)
     jsonResponse = response.json()
 
-    # print(jsonResponse)
+    information = jsonResponse
+    try:
+        last_game = jsonResponse['games'][len(jsonResponse['games']) - 1]
+    except:
+        last_game = False
 
-    return JsonResponse({'information': jsonResponse})
+    try:
+        if last_game['season'] >= 2004: # Specific game data is only available from years 2004 and on
+            url = f'https://api.collegefootballdata.com/games?year={last_game["season"]}&seasonType=both&home={last_game["homeTeam"]}&away={last_game["awayTeam"]}'
+
+            headers = {
+            "Authorization": f"Bearer {os.environ['token']}"
+            }
+
+            response = HTTP_Client.get(url, headers=headers)
+            jsonResponse = response.json()
+            last_game['game_id'] = jsonResponse[0]['id']
+            # print(last_game)
+
+    except:
+        pass
+
+
+    return JsonResponse({'information': information, 'last_game': last_game})
 
 
 

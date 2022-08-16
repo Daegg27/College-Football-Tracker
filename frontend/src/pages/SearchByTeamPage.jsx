@@ -7,6 +7,10 @@ import { Link } from "react-router-dom"
 function SearchByTeamPage(props){
     const {setGames, setTeams, setWins, setLosses, games, team, wins, losses, setCurrentGame, teamNames} = props
 
+    const[regularSeasonGames, setRegularSeasonGames] = useState([])
+    const[postseasonGames, setPostseasonGames] = useState([])
+    const isMounted = useRef(false)
+
 
 
     function searchForTeam(event){
@@ -35,6 +39,25 @@ function SearchByTeamPage(props){
         })
     }
     console.log(games)
+
+    useEffect(() => {
+        if (isMounted.current)
+         {
+          let regularGames = games.filter((game) => 
+            game.season_type == 'regular'
+          )
+          setRegularSeasonGames(regularGames)
+          
+          let postGames = games.filter((game) => {
+            return game.season_type == 'postseason'
+          })
+          setPostseasonGames(postGames)
+        } 
+        else 
+        {
+          isMounted.current = true;
+        }
+      }, [games]);
     
     
 
@@ -69,9 +92,15 @@ function SearchByTeamPage(props){
                 <hr></hr>
                 {team != null && <h1><strong>{team}</strong> was ({wins}-{losses})</h1>}
                 <hr></hr>
-                {games.length != 0 && games.map((game) => {
+                {regularSeasonGames.length != 0 && regularSeasonGames.map((game) => {
                     return <div>
                         <p><Link to={`/search_by_team/${game.id}`}>Week {game.week}</Link>, {game.home_team}: {game.home_points} vs. {game.away_team}: {game.away_points}</p>
+                        <hr></hr>
+                    </div>
+            })}
+            {postseasonGames.length != 0 && postseasonGames.map((game) => {
+                    return <div>
+                        <p><Link to={`/search_by_team/${game.id}`}>{game.season_type}</Link>, {game.home_team}: {game.home_points} vs. {game.away_team}: {game.away_points}</p>
                         <hr></hr>
                     </div>
             })}
