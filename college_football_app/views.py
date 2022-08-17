@@ -263,33 +263,35 @@ def save_game(request, gameID):
     home_team_score = request.data['home_team_score']
     away_team = request.data['away_team']
     away_team_score = request.data['away_team_score']
-    user_email = request.data['email']
     year = request.data['year']
     week = request.data['week']
 
-    registered_user = User.objects.get(username = user_email)
-    
-    new_classic_game = ClassicGame(user=registered_user, game_id = gameID, home_team = home_team, home_team_score = home_team_score, away_team = away_team, away_team_score = away_team_score, year = year, week = week)
-    new_classic_game.save()
+    registered_user = request.user
+    try:
+        new_classic_game = ClassicGame(user=registered_user, game_id = gameID, home_team = home_team, home_team_score = home_team_score, away_team = away_team, away_team_score = away_team_score, year = year, week = week)
+        new_classic_game.save()
 
-    return JsonResponse({'Success': True})
+        return JsonResponse({'Success': True})
+    except:
+        return JsonResponse({'Success': False})
+
+    
 
 @api_view(['GET', 'POST'])
 def find_saved_games(request):
-    
-    if request.GET.get('email'):
-        user_email = request.GET['email']
-        user = User.objects.get(email = user_email)
-        
-        query_set = ClassicGame.objects.filter(user = user)
-        classic_games = []
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            user = request.user
+            
+            query_set = ClassicGame.objects.filter(user = user)
+            classic_games = []
 
-        for game in query_set:
-            new_game = model_to_dict(game)
-            classic_games.append(new_game)
+            for game in query_set:
+                new_game = model_to_dict(game)
+                classic_games.append(new_game)
 
 
-        return JsonResponse({'classic_games': classic_games})
+            return JsonResponse({'classic_games': classic_games})
     else:
         game_id = request.data['gameID']
         year = request.data['year']

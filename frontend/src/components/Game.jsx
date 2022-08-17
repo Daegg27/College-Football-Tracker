@@ -26,7 +26,7 @@ function Game(props){
 
     function RefreshSavedGames(){
         
-        axios.get('/saved_games/', { params: { email: user.email } }).then((response) => {
+        axios.get('/saved_games/').then((response) => {
             setSavedGames(response.data.classic_games)
           })
     }
@@ -37,11 +37,17 @@ function Game(props){
             away_team_score: currentGame.away_points,
             home_team: currentGame.home_team,
             home_team_score: currentGame.home_points,
-            email: user.email,
             year: currentGame.season,
             week: currentGame.week
         }).then((response) => {
-            window.alert('You have succesfully saved this game!')
+            if (response.data.Success){
+                window.alert('You have succesfully saved this game!')
+            }
+            else{
+                window.alert('This game already exist in your Classic Games!')
+                return null
+            }
+            
             RefreshSavedGames()
         })
     }

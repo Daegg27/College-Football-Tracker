@@ -54,7 +54,7 @@ function App() {
 
   function fetchSavedGames(){
     if (user){
-      axios.get('/saved_games/', { params: { email: user.email } }).then((response) => {
+      axios.get('/saved_games/').then((response) => {
         setSavedGames(response.data.classic_games)
         // console.log(response)
     })
